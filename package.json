@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/Billones142/tp1-chatarrerosAlJuicio/issues"
   },
-  "homepage": "https://github.com/Billones142/tp1-chatarrerosAlJuicio#readme"
+  "homepage": "https://github.com/Billones142/tp1-chatarrerosAlJuicio#readme",
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
 }
