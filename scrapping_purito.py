@@ -3,17 +3,16 @@ from bs4 import BeautifulSoup
 
 # URL que vamos a scrapear
 url = 'https://listado.mercadolibre.com.ar/rtx-2060-asus-dual'
-
-# Realizamos la solicitud a la página
+# Hacer la solicitud HTTP a la URL
 response = requests.get(url)
-response.raise_for_status()  # Verifica si la solicitud fue exitosa
+# Verifica si la solicitud fue exitosa
+response.raise_for_status()
+# Analizar el contenido HTML
+soup = BeautifulSoup(response.text, 'lxml')
 
-# Parseamos el contenido HTML
-soup = BeautifulSoup(response.text, 'html.parser')
+# Encontrar los elementos que contienen los precios
+precios = soup.find_all('span', class_='andes-money-amount__fraction')
 
-# Encontramos todos los títulos de los productos
-titles = soup.find_all('h2', class_='ui-search-item__title')
-
-# Imprimimos los títulos
-for title in titles:
-    print(title.text)
+# Mostrar los precios de los productos
+for precio in precios:
+    print(int(precio.text.replace('.','')))
