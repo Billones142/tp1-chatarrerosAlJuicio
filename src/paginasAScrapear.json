@@ -1,0 +1,12 @@
+[
+  {
+    "nombre": "MercadoLibre",
+    "valor": 1,
+    "url": "https://mercadolibre.com"
+  },
+  {
+    "nombre": "CompraGamer",
+    "valor": 2,
+    "url": "https://compragamer.com"
+  }
+]
