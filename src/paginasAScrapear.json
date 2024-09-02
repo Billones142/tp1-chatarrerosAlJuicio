@@ -1,10 +1,12 @@
 [
   {
-    "nombre": "ejemplo1",
-    "valor": 1
+    "nombre": "MercadoLibre",
+    "valor": 1,
+    "url": "https://mercadolibre.com"
   },
   {
-    "nombre": "ejemplo2",
-    "valor": 2
+    "nombre": "CompraGamer",
+    "valor": 2,
+    "url": "https://compragamer.com"
   }
 ]

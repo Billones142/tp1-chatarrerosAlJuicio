@@ -4,10 +4,12 @@ from os import path
 class Pagina:
   nombre: str
   valor: int
+  url: str
 
-  def __init__(self, nombre, valor):
+  def __init__(self, nombre, valor, url):
     self.nombre = nombre
     self.valor = valor
+    self.url= url
 
   def __repr__(self): 
     return f"Pagina(nombre={self.nombre!r}, valor={self.valor!r})"
@@ -35,7 +37,7 @@ def parseJson(jsonPath: str, ClassType: type) -> list | object:
   except Exception as e:
       print(f"Error inesperado: {e}")
 
-def parsePaginasJson(jsonPath: str):
+def parsePaginasJson(jsonPath: str) -> list[Pagina]:
   return parseJson(jsonPath, Pagina)
 
 # Ejemplo de uso:
