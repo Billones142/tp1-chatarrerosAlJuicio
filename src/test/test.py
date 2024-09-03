@@ -2,7 +2,7 @@ import unittest
 from typing import Tuple
 import Pyro5.api
 # importaciones propias del proyecto
-from scrappingActor import ScraperActor, ActorRef
+from actors.scrappingActor import ScraperActor, ActorRef
 from utils.jsonParse import parsePaginasJson
 
 jsonPath= 'paginasAScrapear.json'

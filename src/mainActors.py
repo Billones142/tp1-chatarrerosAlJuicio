@@ -1,5 +1,5 @@
 import Pyro5.api
-from scrappingActor import ScraperActor
+from actors.scrappingActor import ScraperActor
 
 @Pyro5.api.expose
 class ActorServer:
