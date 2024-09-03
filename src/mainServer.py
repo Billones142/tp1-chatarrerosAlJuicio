@@ -2,6 +2,7 @@ from jsonParse import parsePaginasJson
 from scrappingActor import ScraperActor, ActorRef
 from typing import Tuple
 import asyncio
+import Pyro5
 
 jsonPath= 'paginasAScrapear.json'
 
@@ -28,5 +29,16 @@ async def main():
     for actor_ref, _ in actorRefs:
         actor_ref.stop()
 
+def main2():
+    uri = input("Introduce la URI del servidor: ")
+    server = Pyro5.api.Proxy(uri)
+
+    url_to_scrape = "http://mercadolibre.com"
+    print(f"Enviando solicitud de scraping para {url_to_scrape}...")
+    result = server.start_actor(url_to_scrape)
+    
+    print("Resultados obtenidos:")
+    print(result)
+
 if __name__ == '__main__':
-    asyncio.run(main= main())
+    asyncio.run(main= main2())
