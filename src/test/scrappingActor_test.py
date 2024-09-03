@@ -1,8 +1,17 @@
+import sys, os
+#sys.path.append(os.path.abspath('..'))
+ab= os.path.join('..')
+print(ab)
+cd= os.path.abspath(ab)
+print(cd)
+sys.path.append(cd)
+
 import unittest
 from typing import Tuple
 import Pyro5.api
+from pykka import ActorRef
 # importaciones propias del proyecto
-from actors.scrappingActor import ScraperActor, ActorRef
+from actors.scrapping.scrappingActor import ScraperActor
 from utils.jsonParse import parsePaginasJson
 
 jsonPath= 'paginasAScrapear.json'
@@ -13,7 +22,7 @@ class TestStringMethods(unittest.TestCase):
         urlsToScrape= parsePaginasJson(jsonPath)
 
         # Lista para almacenar las referencias de los actores
-        actorRefs: list[ Tuple[ ActorRef[ScraperActor] , str ] ]= []
+        actorRefs: list[Tuple[ ActorRef[ScraperActor] , str] ]= []
 
         # Crear actores para cada tarea de scraping
         for datos in urlsToScrape:
@@ -32,7 +41,7 @@ class TestStringMethods(unittest.TestCase):
             actor_ref.stop()
         self.assertNotEqual(htlmString, None)
     
-    def test_Pyro5_ScrappingActor():
+    def test_Pyro5_ScrappingActor(self):
         uri = input("Introduce la URI del servidor: ")
         server = Pyro5.api.Proxy(uri)
 
@@ -40,8 +49,7 @@ class TestStringMethods(unittest.TestCase):
         print(f"Enviando solicitud de scraping para {url_to_scrape}...")
         result = server.start_actor(url_to_scrape)
         
-        print("Resultados obtenidos:")
-        print(result)
+        self.assertNotEqual(result, None)
 
     """ ejemplos
     def test_isupper(self):
