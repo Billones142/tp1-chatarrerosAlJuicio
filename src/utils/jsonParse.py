@@ -1,15 +1,15 @@
 import json
 from os import path
+from typing import List
 
 class Pagina:
   nombre: str
   valor: int
-  url: str
+  linksDeCompra: List[str]
 
-  def __init__(self, nombre, valor, url):
+  def __init__(self, nombre, linksDeCompra):
     self.nombre = nombre
-    self.valor = valor
-    self.url= url
+    self.linksDeCompra= linksDeCompra
 
   def __repr__(self): 
     return f"Pagina(nombre={self.nombre!r}, valor={self.valor!r})"
@@ -24,7 +24,7 @@ def parseJson(jsonPath: str, ClassType: type) -> list | object:
       # Carga el contenido del archivo JSON en un diccionario
       data = json.load(json_file)
       # Verifica si el JSON es una lista o un solo objeto
-      if isinstance(data, list):
+      if isinstance(data, List):
         # Si es una lista, crea una instancia para cada elemento
         return [ClassType(**item) for item in data]
       else:
