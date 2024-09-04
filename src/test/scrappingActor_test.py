@@ -1,12 +1,14 @@
+import threading
 import unittest
 from typing import Tuple
 import Pyro5.api
 from pykka import ActorRef
 
+
 # importaciones propias del proyecto
-from src.actors.parse import ParseActor
-from src.actors.scrapping import ScraperActor
-from src.utils import parsePaginasJson
+#from ..actors.parse.parseActor import ParseActor
+from ..actors.scrapping.scrappingActor import ScraperActor
+from ..utils.jsonParse import parsePaginasJson
 
 jsonPath= '../paginasAScrapear.json'
 
@@ -35,7 +37,7 @@ class TestScrappingActors(unittest.TestCase): # python -m unittest src.test.scra
             actor_ref.stop()
         self.assertNotEqual(htlmString, None)
     
-    def test_Pyro5_ScrappingActor(self):
+    def test_comunicacion_Pyro5_ScrappingActor(self):
         uri = input("Introduce la URI del servidor: ")
         server = Pyro5.api.Proxy(uri)
 
