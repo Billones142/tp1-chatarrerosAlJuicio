@@ -6,7 +6,7 @@ class ScraperActor(pykka.ThreadingActor):
     def on_receive(self, message):
         command = message.get('command')
 
-        if command == 'scrape':
+        if command == 'scrapeHtml':
             url = message.get('url')
             return self.scrapeHtml(url)
 
@@ -18,6 +18,3 @@ class ScraperActor(pykka.ThreadingActor):
             return htmlString
         except requests.exceptions.RequestException as e:
             return f"Error scraping {url}: {e}"
-    
-    def parseHtml(self, htlmString):
-        return htlmString
