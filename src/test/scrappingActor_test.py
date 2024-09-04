@@ -1,22 +1,16 @@
-import sys, os
-#sys.path.append(os.path.abspath('..'))
-ab= os.path.join('..')
-print(ab)
-cd= os.path.abspath(ab)
-print(cd)
-sys.path.append(cd)
-
 import unittest
 from typing import Tuple
 import Pyro5.api
 from pykka import ActorRef
+
 # importaciones propias del proyecto
-from actors.scrapping.scrappingActor import ScraperActor
-from utils.jsonParse import parsePaginasJson
+from src.actors.parse import ParseActor
+from src.actors.scrapping import ScraperActor
+from src.utils import parsePaginasJson
 
-jsonPath= 'paginasAScrapear.json'
+jsonPath= '../paginasAScrapear.json'
 
-class TestStringMethods(unittest.TestCase):
+class TestScrappingActors(unittest.TestCase): # python -m unittest src.test.scrappingActor_test.TestScrappingActors
 
     def test_ScrappingActor_scrapeHtml(self):
         urlsToScrape= parsePaginasJson(jsonPath)
@@ -27,7 +21,7 @@ class TestStringMethods(unittest.TestCase):
         # Crear actores para cada tarea de scraping
         for datos in urlsToScrape:
             actor_ref = ScraperActor.start()
-            actorRefs.append((actor_ref, datos.url))
+            actorRefs.append((actor_ref, datos.linksDeCompra))
 
 
         # Ejecutar el scraping y obtener los resultados
