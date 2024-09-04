@@ -1,5 +1,5 @@
 from utils.jsonParse import parsePaginasJson
-from actors.scrapping.scrappingActor import ScraperActor, ActorRef
+from actors.scrapping.scrappingActor import ScraperActor
 from typing import Tuple
 import asyncio
 import Pyro5.api
