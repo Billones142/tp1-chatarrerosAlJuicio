@@ -4,9 +4,6 @@ from typing import List, TypedDict
 import re
 
 
-
-
-
 class ParseActor(pykka.ThreadingActor):
   def on_receive(self, message):
     command = message.get('command')
@@ -23,14 +20,15 @@ class ParseActor(pykka.ThreadingActor):
     link: str
     price: str
   
-  class HTML_Element(TypedDict):
-    header: str
-    class_: str
-  
   def stringInt_to_int(self, string: str) -> int :
     return int(re.sub(r'[$.,]', '', string)) # Remplaza los caracteres "$" "." y "," por un espacio vacio y lo convierte en un numero entero
   
   """
+  class HTML_Element(TypedDict):
+    header: str
+    class_: str
+  
+
   def soupPriceParse(self, 
   soup : BeautifulSoup,
   *,
