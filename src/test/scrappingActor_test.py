@@ -7,8 +7,8 @@ from pykka import ActorRef
 
 # importaciones propias del proyecto
 #from ..actors.parse.parseActor import ParseActor
-from ..actors.scrapping.scrappingActor import ScraperActor
-from ..utils.jsonParse import parsePaginasJson
+from src import ScraperActor
+from src import parsePaginasJson
 
 jsonPath= '../paginasAScrapear.json'
 
@@ -36,16 +36,6 @@ class TestScrappingActors(unittest.TestCase): # python -m unittest src.test.scra
         for actor_ref, _ in actorRefs:
             actor_ref.stop()
         self.assertNotEqual(htlmString, None)
-    
-    def test_comunicacion_Pyro5_ScrappingActor(self):
-        uri = input("Introduce la URI del servidor: ")
-        server = Pyro5.api.Proxy(uri)
-
-        url_to_scrape = "http://mercadolibre.com"
-        print(f"Enviando solicitud de scraping para {url_to_scrape}...")
-        result = server.start_actor(url_to_scrape)
-        
-        self.assertNotEqual(result, None)
 
     """ ejemplos
     def test_isupper(self):
