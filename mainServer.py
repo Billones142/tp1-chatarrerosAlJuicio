@@ -7,7 +7,7 @@ import asyncio
 
 jsonPath= 'paginasAScrapear.json'
 
-async def main():
+async def main(): # TODO: interfaz
     None
 
 if __name__ == '__main__':
