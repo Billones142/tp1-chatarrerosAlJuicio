@@ -2,6 +2,7 @@ import pykka
 import requests
 from bs4 import BeautifulSoup
 
+
 class ScraperActor(pykka.ThreadingActor):
     def on_receive(self, message):
         command = message.get('command')

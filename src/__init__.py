@@ -1,13 +1,9 @@
-from .actors import ParseActor, ScraperActor
-from .utils.jsonParse import parseJson, parsePaginasJson
-from .actorServerClass import ActorServer, start_server
-from .websocket import Comunication_WebSocket_ActorsServer, actors_ServerStart, stop_flag
+import actors
+import utils
+from .actorServerClass import ActorServer
+from .websocket import API_ActorsServer, WebSocket_ActorServer
 
-__all__= ["ParseActor",
-          "ScraperActor",
-          "parseJson",
-          "parsePaginasJson",
+__all__= ["actors",
+          "utils",
           "ActorServer",
-          "start_server"
-          "actors_ServerStart",
-          "Comunication_WebSocket_ActorsServer"]
+          "API_ActorsServer"]
