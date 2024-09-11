@@ -12,10 +12,7 @@ class ScraperActor(pykka.ThreadingActor):
             return self.scrapeHtml(url)
 
     def scrapeHtml(self, url):
-        try:
-            response = requests.get(url)
-            response.raise_for_status()
-            htmlString = BeautifulSoup(response.content, 'html.parser')
-            return htmlString
-        except requests.exceptions.RequestException as e:
-            return f"Error scraping {url}: {e}"
+        response = requests.get(url)
+        response.raise_for_status() # no se manejan los errores desde aca
+        htmlString = str(BeautifulSoup(response.content, 'html.parser'))
+        return htmlString
