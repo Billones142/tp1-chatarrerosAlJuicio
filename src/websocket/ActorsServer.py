@@ -6,9 +6,10 @@ import logging
 
 from src.actors import ScraperActor, ParseActor
 
+nombreLogger= "WebSocket_ActorServer"
 
 # Configura el logger del módulo
-logger = logging.getLogger(__name__)  # Nombre del logger igual al nombre del módulo
+logger = logging.getLogger(nombreLogger)  # Nombre del logger igual al nombre del módulo
 logger.setLevel(logging.DEBUG)  # Establece el nivel de logging (puedes cambiar a INFO, WARNING, ERROR)
 
 # Configurar el formato de los mensajes de log
@@ -18,8 +19,13 @@ formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(messag
 console_handler = logging.StreamHandler()
 console_handler.setFormatter(formatter)
 
+# Crear manejador de archivo
+file_handler = logging.FileHandler(f'{nombreLogger.replace(" ","_")}.log')
+file_handler.setFormatter(formatter)
+
 # Añadir el manejador al logger
 logger.addHandler(console_handler)
+logger.addHandler(file_handler)
 
 class WebSocket_ActorServer(): #perdon gaby, es mas facil cuando es una clase
     def __init__(self, port: int, host: str= "localhost", stop_flag: asyncio.Event= asyncio.Event()):
