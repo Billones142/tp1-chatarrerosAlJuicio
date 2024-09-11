@@ -42,11 +42,12 @@ class API_ActorsServer:
         response = await self.serverWebsocketConnection.recv()
         return json.loads(response)
 
-    async def ask_parser(self, *, command: Literal["parseMercadoLibre", "parseUranostream", "parseHardgamers"], htmlString: str):
+    async def ask_parser(self, *, command: Literal["parseMercadoLibre", "parseUranostream", "parseHardgamers"], productName: str, htmlString: str):
         """Envía una solicitud al parser actor para analizar el HTML."""
         await self.serverWebsocketConnection.send(json.dumps({
             "commandWebSocket": "parseHtml",
             "command": command,
+            "productName": productName,
             "htmlString": htmlString
         }))
 
