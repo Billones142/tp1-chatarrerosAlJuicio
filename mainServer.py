@@ -1,11 +1,8 @@
-#from .src.utils.jsonParse import parsePaginasJson
-#from .src.actors.scrapping.scrappingActor import ScraperActor
-#from typing import Tuple
 import asyncio
 
+# importaciones del proyecto
 from src.websocket import API_ActorsServer
-#import Pyro5.api
-#import time
+
 
 jsonPath= 'paginasAScrapear.json'
 
