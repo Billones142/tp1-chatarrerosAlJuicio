@@ -1,6 +1,6 @@
 import json
 import pykka
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, ResultSet
 from typing import TypedDict
 import re
 
@@ -11,7 +11,7 @@ class ParseActor(pykka.ThreadingActor):
         htmlString = message.get('htmlString')
         nombreProducto= message.get('productName')
 
-        if command == 'parseMercadoLibre':
+        if command == 'parseMercadoLibre': # nombreProducto es 'parseMercadoLibre' cuando se llama al actor por el comando. simil para el resto
             return self.parse_MercadoLibre(nombreProducto= nombreProducto ,htmlString= htmlString)
         elif command == 'parseUranostream':
             return self.parse_Uranostream(nombreProducto= nombreProducto ,htmlString= htmlString)
@@ -23,24 +23,22 @@ class ParseActor(pykka.ThreadingActor):
     def stringInt_to_int(self, string: str) -> int :
         return int(re.sub(r'[$.,]', '', string)) # Remplaza los caracteres "$" "." y "," por un espacio vacio y lo convierte en un numero entero
 
-    def parse_MercadoLibre(self, nombreProducto: str, htmlString: str) -> list[str]: # TODO: modificar para que tome un str y no BeatifulSoup
-        soup= BeautifulSoup(htmlString)
+    def parse_MercadoLibre(self, nombreProducto: str, htmlString: str) -> list[str]:
+        soup= BeautifulSoup(htmlString, 'html.parser')
         precios_y_enlaces= list()
-        productos = soup.find_all('a', class_='poly-component__title')
+        productos = soup.find('ol', class_='ui-search-layout ui-search-layout--stack shops__layout')
         for producto in productos:
-            titulo = producto.find('h2', class_='poly-box').text
-            if nombreProducto in titulo:
+            if nombreProducto in producto.text:
                 precio_tag = producto.find_next('span', class_='andes-money-amount__fraction')
-                if precio_tag:
-                    try:
-                        precio = self.stringInt_to_int(precio_tag)
-                        enlace = producto['href']
-                        precios_y_enlaces.append({"price": precio, "link": enlace})
-                    except ValueError:
-                        print(f"Error al procesar el precio en Mercadolibre: {precio_tag.text}")
+                try:
+                    precio = self.stringInt_to_int(precio_tag.text)
+                    enlace = producto.find('a', __class= "")["href"]
+                    precios_y_enlaces.append({"price": precio, "link": enlace})
+                except ValueError:
+                    print(f"Error al procesar el precio en Mercadolibre: {precio_tag.text}")
         return json.dumps(precios_y_enlaces)
 
-    def parse_Uranostream(self, nombreProducto: str, htmlString: str) -> list[str]:
+    def parse_Uranostream(self, nombreProducto: str, htmlString: str) -> list[str]: #TODO: corregir funcionamiento
         soup= BeautifulSoup(htmlString)
         precios_y_enlaces = list[str]()
         productos = soup.find_all('a', class_='woocommerce-LoopProduct-link woocommerce-loop-product__link')
@@ -57,7 +55,7 @@ class ParseActor(pykka.ThreadingActor):
                         print(f"Error al procesar el precio en Uranostream: {precio_tag.text}")
         return json.dumps(precios_y_enlaces)
 
-    def parse_Hardgamers(self, nombreProducto: str, htmlString: str) -> list[str]:
+    def parse_Hardgamers(self, nombreProducto: str, htmlString: str) -> list[str]: #TODO: corregir funcionamiento
         soup= BeautifulSoup(htmlString)
         precios_y_enlaces = list[str]()
         productos = soup.find_all('h3', class_='product-title line-clamp')
