@@ -1,7 +1,6 @@
 import json
 import pykka
-from bs4 import BeautifulSoup, ResultSet
-from typing import TypedDict
+from bs4 import BeautifulSoup, Tag, ResultSet
 import re
 
 
@@ -20,8 +19,14 @@ class ParseActor(pykka.ThreadingActor):
         else:
             raise Exception("El comando no es valido")
 
-    def stringInt_to_int(self, string: str) -> int :
-        return int(re.sub(r'[$.,]', '', string)) # Remplaza los caracteres "$" "." y "," por un espacio vacio y lo convierte en un numero entero
+    def stringInt_to_int(self, string: str) -> float :
+        patronAdd = r'[0-9.,]+'
+        patronSub= r'[$\n]'
+        parsedString= re.sub(pattern= patronSub, repl= '', string= string)
+        parsedString= re.sub(pattern= r'[,]', repl= '.', string= parsedString)
+        parsedString= parsedString.replace(' ','')
+        #parsedString= re.match(pattern=patronAdd, string=parsedString)
+        return float(parsedString) # Remplaza los caracteres "$" "." y "," por un espacio vacio y lo convierte en un numero entero
 
     def parse_MercadoLibre(self, nombreProducto: str, htmlString: str) -> list[str]:
         soup= BeautifulSoup(htmlString, 'html.parser')
@@ -39,38 +44,33 @@ class ParseActor(pykka.ThreadingActor):
         return json.dumps(precios_y_enlaces)
 
     def parse_Uranostream(self, nombreProducto: str, htmlString: str) -> list[str]: #TODO: corregir funcionamiento
-        soup= BeautifulSoup(htmlString)
+        soup= BeautifulSoup(htmlString,"html.parser")
         precios_y_enlaces = list[str]()
-        productos = soup.find_all('a', class_='woocommerce-LoopProduct-link woocommerce-loop-product__link')
+        productos: ResultSet[Tag] = soup.find_all('div', class_='products row row-small large-columns-6 medium-columns-3 small-columns-2 has-equal-box-heights equalize-box')
         for producto in productos:
-            titulo = producto.text
+            titulo_tag: Tag= producto.find(name='p', class_="name product-title woocommerce-loop-product__title").find(name='a', class_="woocommerce-LoopProduct-link woocommerce-loop-product__link")
+            titulo: str = titulo_tag.text
             if nombreProducto in titulo:
-                precio_tag = producto.find_next('span', class_='woocommerce-Price-amount amount')
+                precio_tag = producto.find('span', class_='woocommerce-Price-amount amount').find("bdi")
                 if precio_tag:
                     try:
-                        precio = self.stringInt_to_int(precio_tag)
-                        enlace = producto['href']
+                        precio = self.stringInt_to_int(precio_tag.text)
+                        enlace = titulo_tag["href"]
                         precios_y_enlaces.append({"price": precio, "link": enlace})
-                    except ValueError:
-                        print(f"Error al procesar el precio en Uranostream: {precio_tag.text}")
+                    except Exception as e:
+                        raise Exception(f"Error al procesar el precio en Uranostream: {precio_tag.text}")
         return json.dumps(precios_y_enlaces)
 
     def parse_Hardgamers(self, nombreProducto: str, htmlString: str) -> list[str]: #TODO: corregir funcionamiento
-        soup= BeautifulSoup(htmlString)
+        soup= BeautifulSoup(htmlString,"html.parser")
         precios_y_enlaces = list[str]()
-        productos = soup.find_all('h3', class_='product-title line-clamp')
+        productos: ResultSet[Tag] = soup.find_all('section', class_='row white-background')
         for producto in productos:
-            titulo = producto.text.strip()
+            titulo = producto.find('h3',class_= "product-title line-clamp").text
             if nombreProducto in titulo:
-                precio_container = producto.find_next('div', class_='d-flex')
-                if precio_container:
-                    try:
-                        precio_tag = precio_container.find('h2', itemprop='price')
-                        if precio_tag:
-                            precio_text = precio_tag.text.strip()
-                            precio = self.stringInt_to_int(precio_text)
-                            enlace = producto.find_parent('a')['href']
-                            precios_y_enlaces.append({"price": precio, "link": enlace})
-                    except ValueError:
-                        print(f"Error al procesar el precio en Hardgamers: {precio_tag.text}")
+                precio_tag: Tag= producto.find_all("h2",class_="product-price")[1]
+                precio_text = precio_tag.text
+                precio = self.stringInt_to_int(precio_text)
+                enlace = producto.find("div", class_='product-description padding-top-20').find("a")['href']
+                precios_y_enlaces.append({"price": precio, "link": enlace})
         return json.dumps(precios_y_enlaces)
