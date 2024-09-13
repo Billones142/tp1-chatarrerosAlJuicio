@@ -2,5 +2,5 @@ node_modules
 .vscode
 .venv
 .env
-.log
+*.log
 __pycache__
