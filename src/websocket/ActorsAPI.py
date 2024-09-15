@@ -1,7 +1,23 @@
 import websockets
 import json
 from typing import Literal
+import logging
 
+nombreLogger= "API_ActorsServer"
+
+# Configura el logger del módulo
+logger = logging.getLogger(nombreLogger)  # Nombre del logger igual al nombre del módulo
+logger.setLevel(logging.NOTSET)  # Establece el nivel de logging
+
+# Configurar el formato de los mensajes de log
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
+# Crear y agregar un manejador para la consola
+console_handler = logging.StreamHandler()
+console_handler.setFormatter(formatter)
+
+# Añadir el manejador al logger
+logger.addHandler(console_handler)
 
 class API_ActorsServer:
     def __init__(self, uri: str):

@@ -10,7 +10,7 @@ nombreLogger= "WebSocket_ActorServer"
 
 # Configura el logger del módulo
 logger = logging.getLogger(nombreLogger)  # Nombre del logger igual al nombre del módulo
-logger.setLevel(logging.DEBUG)  # Establece el nivel de logging (puedes cambiar a INFO, WARNING, ERROR)
+logger.setLevel(logging.DEBUG)  # Establece el nivel de logging
 
 # Configurar el formato de los mensajes de log
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
