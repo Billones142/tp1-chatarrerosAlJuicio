@@ -52,7 +52,6 @@ class TestCommunication(unittest.IsolatedAsyncioTestCase):
     async def test_comunicacion_WebSocket(self):
         async with API_ActorsServer(f"ws://localhost:{self.port}") as serverActores:
             response= await serverActores.ask_scrapper("https://youtube.com") # elegido por su complejidad y longitud
-            print("respuesta:", response)
 
         # si la cadena de error no es 0 hubo un error en el servidor y el resultado no es utilizable
         self.assertEqual(len(response["error"]), 0 , msg= "error en el servidor de actores:\n") # + response["error"])
@@ -63,7 +62,6 @@ class TestCommunication(unittest.IsolatedAsyncioTestCase):
     async def test_errorComunicacion_WebSocket(self):
         async with API_ActorsServer(f"ws://localhost:{self.port}") as serverActores:
             response= await serverActores.ask_scrapper("youtube.com") # al no especificar el protocolo https se fuerza una falla en el servidor
-            print("respuesta:",response)
 
         self.assertNotEqual(len(response["error"]), 0 , msg= "no hubo error en el servidor de actores")
         
@@ -72,7 +70,6 @@ class TestCommunication(unittest.IsolatedAsyncioTestCase):
     async def test_PeticionDeListaJson(self):
         async with API_ActorsServer(f"ws://localhost:{self.port}") as serverActores:
             response= await serverActores.ask_scrapper("youtube.com") # al no especificar el protocolo https se fuerza una falla en el servidor
-            print("respuesta:",response)
 
         # si la cadena de error no es 0 hubo un error en el servidor y el resultado no es utilizable
         self.assertNotEqual(len(response["error"]), 0 , msg= "no hubo error en el servidor de actores")
