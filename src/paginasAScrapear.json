@@ -1,12 +1,16 @@
 [
   {
-    "nombre": "MercadoLibre",
-    "valor": 1,
-    "url": "https://mercadolibre.com"
+    "nombre": "2060",
+    "linksDeCompra": [
+      "https://listado.mercadolibre.com.ar/computacion/componentes-pc/placas/placas-video/fabricante-nvidia/nuevo/rtx-2060_NoIndex_True#applied_filter_id%3DITEM_CONDITION%26applied_filter_name%3DCondici%C3%B3n%26applied_filter_order%3D6%26applied_value_id%3D2230284%26applied_value_name%3DNuevo%26applied_value_order%3D1%26applied_value_results%3D47%26is_custom%3Dfalse",
+      "https://uranostream.com/categoria-producto/componentes/placa-de-video/",
+      "https://www.hardgamers.com.ar/search?text=2060"
+    ]
   },
   {
-    "nombre": "CompraGamer",
-    "valor": 2,
-    "url": "https://compragamer.com"
+    "nombre": "3070",
+    "linksDeCompra": [
+      "https://listado.mercadolibre.com.ar/rtx-2070#D[A:rtx%202070]"
+    ]
   }
 ]
