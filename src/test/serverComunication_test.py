@@ -6,7 +6,7 @@ import asyncio
 import websockets
 
 # importaciones propias del proyecto
-from src import API_ActorsServer, WebSocket_ActorServer 
+from src.websocket import API_ActorsServer, WebSocket_ActorServer, ErrorActoresAPI 
 
 
 
@@ -44,37 +44,45 @@ class TestCommunication(unittest.IsolatedAsyncioTestCase):
         return super().tearDown()
 
     async def test_ActorServerStart(self):
-        self.assertTrue(True)
+        error= False
         async with API_ActorsServer(f"ws://localhost:{self.port}") as serverActores:
-            await serverActores.ask_scrapper("adsfa")
+            try:
+                await serverActores.ask_scrapper("adsfa")
+            except ErrorActoresAPI:
+                error= True
+            self.assertTrue(error)
+
 
 
     async def test_comunicacion_WebSocket(self):
         async with API_ActorsServer(f"ws://localhost:{self.port}") as serverActores:
-            response= await serverActores.ask_scrapper("https://youtube.com") # elegido por su complejidad y longitud
+            try:
+                response= await serverActores.ask_scrapper("https://youtube.com") # elegido por su complejidad y longitud
+            except ErrorActoresAPI:
+                self.assertTrue(False, msg= "error en el servidor de actores:\n") # + response["error"])
 
         # si la cadena de error no es 0 hubo un error en el servidor y el resultado no es utilizable
-        self.assertEqual(len(response["error"]), 0 , msg= "error en el servidor de actores:\n") # + response["error"])
+        
         # checkeo para ver que la respuesta es grande
-        self.assertNotEqual(len(response["result"]), 0, msg= "La cadena de html no tiene contenido")
-        self.assertGreater(len(response["result"]), 80, msg= "La cadena de html es muy corta\n cadena: ")#+ response["result"])
+        self.assertNotEqual(len(response), 0, msg= "La cadena de html no tiene contenido")
+        self.assertGreater(len(response), 80, msg= "La cadena de html es muy corta")
 
     async def test_errorComunicacion_WebSocket(self):
         async with API_ActorsServer(f"ws://localhost:{self.port}") as serverActores:
-            response= await serverActores.ask_scrapper("youtube.com") # al no especificar el protocolo https se fuerza una falla en el servidor
+            try:
+                response= await serverActores.ask_scrapper("youtube.com") # al no especificar el protocolo https se fuerza una falla en el servidor
+                self.assertTrue(False , msg= "no hubo error en el servidor de actores") # si se llega aqui significa que no hubo error
+            except Exception:
+                self.assertTrue(True)
 
-        self.assertNotEqual(len(response["error"]), 0 , msg= "no hubo error en el servidor de actores")
-        
-        self.assertEqual(len(response["result"]), 0, msg= "La cadena de html si tiene contenido\n cadena: " + response["result"])
 
-    async def test_PeticionDeListaJson(self):
+    async def test_PeticionDeListaJson(self): # TODO: agregar mas verificaciones
         async with API_ActorsServer(f"ws://localhost:{self.port}") as serverActores:
-            response= await serverActores.ask_scrapper("youtube.com") # al no especificar el protocolo https se fuerza una falla en el servidor
+            htmlResponse= await serverActores.ask_scrapper("https://listado.mercadolibre.com.ar/2060#D[A:2060]") # al no especificar el protocolo https se fuerza una falla en el servidor
+            pasedHtml= await serverActores.ask_parser(command="parseMercadoLibre", htmlString= htmlResponse, productName= "2060")
 
-        # si la cadena de error no es 0 hubo un error en el servidor y el resultado no es utilizable
-        self.assertNotEqual(len(response["error"]), 0 , msg= "no hubo error en el servidor de actores")
-        # simple checkeo para ver que la respuesta es grande
-        self.assertEqual(len(response["result"]), 0, msg= "La cadena de html si tiene contenido\n cadena: " + response["result"])
+
+        self.assertGreaterEqual(len(pasedHtml),1)
 
 
 if __name__ == '__main__':

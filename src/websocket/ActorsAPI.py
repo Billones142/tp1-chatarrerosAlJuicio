@@ -1,6 +1,6 @@
 import websockets
 import json
-from typing import Literal
+from typing import Literal, TypedDict
 import logging
 
 nombreLogger= "API_ActorsServer"
@@ -18,6 +18,15 @@ console_handler.setFormatter(formatter)
 
 # Añadir el manejador al logger
 logger.addHandler(console_handler)
+
+class precioYLinks(TypedDict):
+    price: int
+    link: str
+
+class ErrorActoresAPI(Exception):
+    def __init__(self, message):
+        super().__init__(message)
+        self.message = message
 
 class API_ActorsServer:
     def __init__(self, uri: str):
@@ -45,7 +54,7 @@ class API_ActorsServer:
             except:
                 print("error al cerrar coneccion")
     
-    async def ask_scrapper(self, url: str):
+    async def ask_scrapper(self, url: str) -> str:
         if self.serverWebsocketConnection:
             await self.serverWebsocketConnection.send(json.dumps({
                 "commandWebSocket": "scrapeHtml",
@@ -56,11 +65,17 @@ class API_ActorsServer:
 
         # Recibir respuesta del servidor
         response = await self.serverWebsocketConnection.recv()
-        return json.loads(response)
 
-    async def ask_parser(self, *, command: Literal["parseMercadoLibre", "parseUranostream", "parseHardgamers"], productName: str, htmlString: str):
+        jsonCargado= json.loads(response)
+
+        if len(jsonCargado["error"]) != 0:
+            raise ErrorActoresAPI(jsonCargado["error"])
+
+        return jsonCargado["result"]
+
+    async def ask_parser(self, *, command: Literal["parseMercadoLibre", "parseUranostream", "parseHardgamers"], productName: str, htmlString: str) -> precioYLinks:
         """Envía una solicitud al parser actor para analizar el HTML."""
-        await self.serverWebsocketConnection.send(json.dumps({
+        await self.serverWebsocketConnection.send(json.dumps({ # TODO en caso de error hacer un raise de error en el servidor
             "commandWebSocket": "parseHtml",
             "command": command,
             "productName": productName,
@@ -70,5 +85,10 @@ class API_ActorsServer:
         # Recibir respuesta del servidor
         response = await self.serverWebsocketConnection.recv()
 
+        jsonCargado= json.loads(response)
+
+        if len(jsonCargado["error"]) != 0:
+            raise ErrorActoresAPI(jsonCargado["error"])
+
         # Se espera como respuesta un string del HTML procesado
-        return json.loads(response)
+        return jsonCargado["result"]

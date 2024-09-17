@@ -45,7 +45,7 @@ class ParseActor(pykka.ThreadingActor):
 
     def parse_Uranostream(self, nombreProducto: str, htmlString: str) -> list[str]: #TODO: corregir funcionamiento
         soup= BeautifulSoup(htmlString,"html.parser")
-        precios_y_enlaces = list[str]()
+        precios_y_enlaces = list()
         productos: ResultSet[Tag] = soup.find_all('div', class_='products row row-small large-columns-6 medium-columns-3 small-columns-2 has-equal-box-heights equalize-box')
         for producto in productos:
             titulo_tag: Tag= producto.find(name='p', class_="name product-title woocommerce-loop-product__title").find(name='a', class_="woocommerce-LoopProduct-link woocommerce-loop-product__link")
@@ -63,7 +63,7 @@ class ParseActor(pykka.ThreadingActor):
 
     def parse_Hardgamers(self, nombreProducto: str, htmlString: str) -> list[str]: #TODO: corregir funcionamiento
         soup= BeautifulSoup(htmlString,"html.parser")
-        precios_y_enlaces = list[str]()
+        precios_y_enlaces = list()
         productos: ResultSet[Tag] = soup.find_all('section', class_='row white-background')
         for producto in productos:
             titulo = producto.find('h3',class_= "product-title line-clamp").text
