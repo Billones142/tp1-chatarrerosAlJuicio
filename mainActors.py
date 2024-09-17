@@ -15,7 +15,10 @@ def main():
     
     # Iniciar WebSocket_ActorServer
     server = WebSocket_ActorServer(port=port, host="0.0.0.0", stop_flag=event)
-    asyncio.run(server.serverLoop())
+    try:
+        asyncio.run(server.serverLoop())
+    except KeyboardInterrupt:
+        event.set()
 
 if __name__ == "__main__":
     main()
