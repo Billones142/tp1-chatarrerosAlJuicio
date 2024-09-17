@@ -4,7 +4,7 @@ from src import utils
 
 jsonPath= '../paginasAScrapear.json'
 
-class TestCommunication(unittest.IsolatedAsyncioTestCase):
+class TestUtils(unittest.IsolatedAsyncioTestCase):
     def test_parsePaginasJson(self):
         paginasJson= utils.parsePaginasJson(jsonPath)
         
