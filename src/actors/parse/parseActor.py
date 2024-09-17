@@ -32,12 +32,16 @@ class ParseActor(pykka.ThreadingActor):
         soup= BeautifulSoup(htmlString, 'html.parser')
         precios_y_enlaces= list()
         productos = soup.find('ol', class_='ui-search-layout ui-search-layout--stack shops__layout')
+
+        if productos == None:
+            productos: ResultSet[Tag]= soup.find_all("li", class_= "ui-search-layout__item")
+
         for producto in productos:
             if nombreProducto in producto.text:
                 precio_tag = producto.find_next('span', class_='andes-money-amount__fraction')
                 try:
                     precio = self.stringInt_to_int(precio_tag.text)
-                    enlace = producto.find('a', __class= "")["href"]
+                    enlace = producto.find("h2", "poly-box poly-component__title").find('a', __class= "")["href"]
                     precios_y_enlaces.append({"price": precio, "link": enlace})
                 except ValueError:
                     print(f"Error al procesar el precio en Mercadolibre: {precio_tag.text}")

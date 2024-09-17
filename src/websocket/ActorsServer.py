@@ -71,7 +71,7 @@ class WebSocket_ActorServer(): #perdon gaby, es mas facil cuando es una clase
             if messages["commandWebSocket"] == "scrapeHtml":
                 response= self.ask_scrapper(url= messages["url"])
             elif messages["commandWebSocket"] == "parseHtml":
-                response= json.dumps(self.ask_HtmlParser(messages["command"], messages["htmlString"]))
+                response= json.dumps(self.ask_HtmlParser(messages["command"], messages["htmlString"], messages["productName"]))
 
         except Exception as e:
             logger.debug("Error while responding message")
@@ -84,8 +84,8 @@ class WebSocket_ActorServer(): #perdon gaby, es mas facil cuando es una clase
     def ask_scrapper(self,url: str) -> str:
         return self.scrapperActor.ask(block= True, message={'command': 'scrapeHtml', 'url': url})
 
-    def ask_HtmlParser(self, comand: str, htmlString: str) -> list:
-        return self.parseActor.ask(block= True, message={'command': comand, 'htmlString': htmlString})
+    def ask_HtmlParser(self, comand: str, htmlString: str, productName: str) -> list:
+        return self.parseActor.ask(block= True, message={'command': comand, 'htmlString': htmlString, "productName": productName})
 
     async def serverLoop(self):
         await self.startServer()
