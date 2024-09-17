@@ -39,7 +39,7 @@ class WebSocket_ActorServer(): #perdon gaby, es mas facil cuando es una clase
         self.parseActor= ParseActor.start()
         logger.info("Actores iniciados")
         try:
-            self.websocketServer= await serve(handler= self.handle_client, host= self.host, port= self.port)
+            self.websocketServer= await serve(handler= self.handle_client, host= self.host, port= self.port, max_size=10 * 1024 * 1024)
         except Exception as e:
             self.scrapperActor.stop(block= True)
             self.parseActor.stop(block= True)
@@ -55,7 +55,7 @@ class WebSocket_ActorServer(): #perdon gaby, es mas facil cuando es una clase
         logger.info("Server services stop successfull")
 
     async def handle_client(self,websocket: ServerConnection):
-        logger.info("New client connected to server: ", websocket.id)
+        logger.info("New client connected to server: %s", websocket.id)
         async for message in websocket:
             response= await self.handle_message(message) # responde el mensaje
             await websocket.send(response) # envia la respuesta
