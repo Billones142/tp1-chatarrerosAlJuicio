@@ -73,7 +73,7 @@ class API_ActorsServer:
 
         return jsonCargado["result"]
 
-    async def ask_parser(self, *, command: Literal["parseMercadoLibre", "parseUranostream", "parseHardgamers"], productName: str, htmlString: str) -> precioYLinks:
+    async def ask_parser(self, *, command: Literal["parseMercadoLibre", "parseUranostream", "parseHardgamers"], productName: str, htmlString: str) -> list[precioYLinks]:
         """Envía una solicitud al parser actor para analizar el HTML."""
         await self.serverWebsocketConnection.send(json.dumps({ # TODO en caso de error hacer un raise de error en el servidor
             "commandWebSocket": "parseHtml",
@@ -91,4 +91,4 @@ class API_ActorsServer:
             raise ErrorActoresAPI(jsonCargado["error"])
 
         # Se espera como respuesta un string del HTML procesado
-        return jsonCargado["result"]
+        return json.loads(json.loads(jsonCargado["result"]))

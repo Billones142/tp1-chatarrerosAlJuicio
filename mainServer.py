@@ -12,7 +12,7 @@ async def main(): # TODO: interfaz
     async with actorsServer:
         htmlString= await actorsServer.ask_scrapper("https://listado.mercadolibre.com.ar/2060#D[A:2060]") # elegido por su complejidad y longitud
         htmlParseado= await actorsServer.ask_parser(command= "parseMercadoLibre", htmlString=htmlString, productName="2060")
-    print(htmlParseado)
+    print(htmlParseado[0]["link"])
 
 if __name__ == '__main__':
     asyncio.run(main= main())

@@ -19,15 +19,6 @@ class ParseActor(pykka.ThreadingActor):
         else:
             raise Exception("El comando no es valido")
 
-    def stringInt_to_int(self, string: str) -> float :
-        patronAdd = r'[0-9.,]+'
-        patronSub= r'[$\n]'
-        parsedString= re.sub(pattern= patronSub, repl= '', string= string)
-        parsedString= re.sub(pattern= r'[,]', repl= '.', string= parsedString)
-        parsedString= parsedString.replace(' ','')
-        #parsedString= re.match(pattern=patronAdd, string=parsedString)
-        return float(parsedString) # Remplaza los caracteres "$" "." y "," por un espacio vacio y lo convierte en un numero entero
-
     def parse_MercadoLibre(self, nombreProducto: str, htmlString: str) -> list[str]:
         soup= BeautifulSoup(htmlString, 'html.parser')
         precios_y_enlaces= list()
@@ -40,7 +31,7 @@ class ParseActor(pykka.ThreadingActor):
             if nombreProducto in producto.text:
                 precio_tag = producto.find_next('span', class_='andes-money-amount__fraction')
                 try:
-                    precio = self.stringInt_to_int(precio_tag.text)
+                    precio = precio_tag.text
                     enlace = producto.find("h2", "poly-box poly-component__title").find('a', __class= "")["href"]
                     precios_y_enlaces.append({"price": precio, "link": enlace})
                 except ValueError:
@@ -58,7 +49,7 @@ class ParseActor(pykka.ThreadingActor):
                 precio_tag = producto.find('span', class_='woocommerce-Price-amount amount').find("bdi")
                 if precio_tag:
                     try:
-                        precio = self.stringInt_to_int(precio_tag.text)
+                        precio = precio_tag.text
                         enlace = titulo_tag["href"]
                         precios_y_enlaces.append({"price": precio, "link": enlace})
                     except Exception as e:
@@ -74,7 +65,7 @@ class ParseActor(pykka.ThreadingActor):
             if nombreProducto in titulo:
                 precio_tag: Tag= producto.find_all("h2",class_="product-price")[1]
                 precio_text = precio_tag.text
-                precio = self.stringInt_to_int(precio_text)
+                precio = precio_text
                 enlace = producto.find("div", class_='product-description padding-top-20').find("a")['href']
                 precios_y_enlaces.append({"price": precio, "link": enlace})
         return json.dumps(precios_y_enlaces)
