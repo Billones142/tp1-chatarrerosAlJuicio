@@ -50,6 +50,13 @@ class TestActors(unittest.TestCase): # python -m unittest src.test.scrappingActo
         self.assertIsNotNone(parsedQuery)
         self.assertNotEqual(len(parsedQuery), 0)
 
+    def test_ParserActor_parseUranostream2(self):
+        htlmString = self.scrapperActor.ask({'command': 'scrapeHtml', 'url': "https://uranostream.com/?s=4090&post_type=product&dgwt_wcas=1"})
+        parsedQuery= self.parserActor.ask({'command': 'parseUranostream', 'productName': '4090', 'htmlString': htlmString})
+
+        self.assertIsNotNone(parsedQuery)
+        self.assertNotEqual(len(parsedQuery), 0)
+
     def test_ParserActor_parse_Hardgamers(self):
         htlmString = self.scrapperActor.ask({'command': 'scrapeHtml', 'url': "https://www.hardgamers.com.ar/search?text=2060"})
         parsedQuery= self.parserActor.ask({'command': 'parseHardgamers', 'productName': '2060', 'htmlString': htlmString})

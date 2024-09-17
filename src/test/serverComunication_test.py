@@ -84,6 +84,14 @@ class TestCommunication(unittest.IsolatedAsyncioTestCase):
 
         self.assertGreaterEqual(len(pasedHtml),1)
 
+    async def test_PeticionDeListaJson2(self): # TODO: agregar mas verificaciones
+        async with API_ActorsServer(f"ws://localhost:{self.port}") as serverActores:
+            htmlResponse= await serverActores.ask_scrapper("https://listado.mercadolibre.com.ar/2060#D[A:2060]") # al no especificar el protocolo https se fuerza una falla en el servidor
+            pasedHtml= await serverActores.ask_parser(command="parseUranostream", htmlString= htmlResponse, productName= "2060")
+
+
+        self.assertGreaterEqual(len(pasedHtml),1)
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
