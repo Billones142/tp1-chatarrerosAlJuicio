@@ -10,6 +10,8 @@ class TestCommunication(unittest.IsolatedAsyncioTestCase):
         
         self.assertGreaterEqual(len(paginasJson),2)
 
+        print(str(paginasJson[0].linksDeCompra))
+
         for pagina in paginasJson:
             self.assertIsNotNone(pagina.nombre)
             self.assertGreaterEqual(len(pagina.linksDeCompra),1)
