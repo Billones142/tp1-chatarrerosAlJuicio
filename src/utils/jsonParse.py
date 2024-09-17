@@ -38,16 +38,3 @@ def parseJson(jsonPath: str, ClassType: type) -> list | object:
 
 def parsePaginasJson(jsonPath: str) -> list[Pagina]:
     return parseJson(jsonPath, Pagina)
-
-# Ejemplo de uso:
-# Supongamos que el archivo JSON es algo como:
-# {
-#   "nombre": "Página 1",
-#   "valor": 42
-# }
-
-# O para un JSON de lista:
-# [
-#   {"nombre": "Página 1", "valor": 42},
-#   {"nombre": "Página 2", "valor": 84}
-# ]
