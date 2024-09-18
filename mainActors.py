@@ -5,7 +5,7 @@ from src import WebSocket_ActorServer
 
 # Configuración específica para cada módulo
 logging.getLogger('asyncio').setLevel(logging.WARNING)
-logging.getLogger('pykka').setLevel(logging.WARNING)
+logging.getLogger('pykka').setLevel(logging.INFO)
 logging.getLogger('websockets').setLevel(logging.INFO)
 
 
