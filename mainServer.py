@@ -3,7 +3,7 @@ import threading
 
 # importaciones del proyecto
 from src.websocket import API_ActorsServer
-from src.utils import encontrar_producto_mas_barato
+from src.utils import encontrar_producto_mas_barato,comparar_precios_enlaces
 
 
 jsonPath= './src/paginasAScrapear.json'
@@ -26,8 +26,9 @@ async def main(): # TODO: interfaz
     print(encontrar_producto_mas_barato(htmlParseado2))
     print(f"el producto con el nombre {nombreProducto} mas barato de hardgaming es:")
     print(encontrar_producto_mas_barato(htmlParseado3))
-    
-
+    lista_precios=[htmlParseado,htmlParseado2,htmlParseado3]
+    print("el producto mas barato de las 3 opciones es:")
+    print(comparar_precios_enlaces(lista_precios))
 if __name__ == '__main__':
     try:
         asyncio.run(main= main())

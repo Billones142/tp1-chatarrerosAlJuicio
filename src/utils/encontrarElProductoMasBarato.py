@@ -32,7 +32,7 @@ def encontrar_producto_mas_barato(productos):
     productos_filtrados = limpiar_diccionario_productos(productos)
     
     if not productos_filtrados:
-        return None
+        return "No se encuentra disponible el producto en esta pagina"
     
     # Suponemos que el primer producto es el más barato al principio
     producto_mas_barato = productos_filtrados[0]
@@ -47,3 +47,25 @@ def encontrar_producto_mas_barato(productos):
     
     return limpiar_precio(producto_mas_barato['price']), producto_mas_barato['link']
 
+def comparar_precios_enlaces(lista_productos_por_enlace):
+    """
+    Compara los precios más bajos entre varios enlaces y retorna el más barato.
+
+    :param lista_productos_por_enlace: Lista de listas, donde cada sublista contiene diccionarios de productos de un enlace.
+    :return: Diccionario con el enlace del producto más barato entre todos los enlaces.
+    """
+    productos_mas_baratos = []
+
+    # Obtener el producto más barato de cada enlace
+    for productos in lista_productos_por_enlace:
+        precio, link = encontrar_producto_mas_barato(productos)
+        if precio is not None:
+            productos_mas_baratos.append({'precio': precio, 'link': link})
+
+    if not productos_mas_baratos:
+        return "No se encontraron productos disponibles en los enlaces proporcionados."
+    
+    # Encontrar el producto más barato entre todos los enlaces
+    producto_mas_barato = min(productos_mas_baratos, key=lambda x: x['precio'])
+    
+    return producto_mas_barato

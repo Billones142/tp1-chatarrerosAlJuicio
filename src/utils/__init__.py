@@ -1,7 +1,7 @@
 from .jsonParse import parseJson, parsePaginasJson
 from .singleton import Singleton
 from .urlOrigin import get_origin, get_main_origin
-from .encontrarElProductoMasBarato import limpiar_precio, encontrar_producto_mas_barato, limpiar_diccionario_productos
+from .encontrarElProductoMasBarato import limpiar_precio, encontrar_producto_mas_barato, limpiar_diccionario_productos, comparar_precios_enlaces
 
 __all__= ["parseJson",
           "parsePaginasJson",
@@ -10,5 +10,6 @@ __all__= ["parseJson",
           "limpiar_precio",
           "encontrar_producto_mas_barato",
           "limpiar_diccionario_productos",
-          "get_main_origin"
+          "get_main_origin",
+          "comparar_precios_enlaces"
           ]
