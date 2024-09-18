@@ -1,3 +1,4 @@
+import traceback
 from websockets.asyncio.server import serve, ServerConnection
 import asyncio
 import json
@@ -76,7 +77,13 @@ class WebSocket_ActorServer(): #perdon gaby, es mas facil cuando es una clase
         except Exception as e:
             logger.debug("Error while responding message")
             response= ""
-            error= "Error del servidor:\n" + str(e) + "\n Fin de error del servidor"
+            # Get the last frame from the stack trace
+            stack = traceback.extract_tb(e.__traceback__)
+            last_frame = stack[-1]
+            function_name = last_frame.name
+            filename = last_frame.filename
+            line_number = last_frame.lineno
+            error= f"\nInicio error del servidor ({function_name} en {filename} linea {line_number}):\n" + str(e) + "\n Fin de error del servidor"
 
         logger.info("Ended Hanlding message")
         return json.dumps({"error": error,"result":response})

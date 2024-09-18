@@ -28,14 +28,17 @@ class ParseActor(pykka.ThreadingActor):
             productos: ResultSet[Tag]= soup.find_all("li", class_= "ui-search-layout__item")
 
         for producto in productos:
-            if nombreProducto in producto.text:
-                precio_tag = producto.find_next('span', class_='andes-money-amount__fraction')
-                try:
-                    precio = precio_tag.text
-                    enlace = producto.find("h2", "poly-box poly-component__title").find('a', __class= "")["href"]
-                    precios_y_enlaces.append({"price": precio, "link": enlace})
-                except ValueError:
-                    print(f"Error al procesar el precio en Mercadolibre: {precio_tag.text}")
+            try:
+                if nombreProducto in producto.text:
+                    precio_tag = producto.find_next('span', class_='andes-money-amount__fraction')
+                    try:
+                        precio = precio_tag.text
+                        enlace = producto.find("h2", "poly-box poly-component__title").find('a', __class= "")["href"]
+                        precios_y_enlaces.append({"price": precio, "link": enlace})
+                    except ValueError:
+                        print(f"Error al procesar el precio en Mercadolibre: {precio_tag.text}")
+            except ValueError:
+                print(f"Error al procesar el producto en Mercadolibre: {precio_tag.text}")
         return json.dumps(precios_y_enlaces)
 
     def parse_Uranostream(self, nombreProducto: str, htmlString: str) -> list[str]: #TODO: corregir funcionamiento
@@ -61,11 +64,15 @@ class ParseActor(pykka.ThreadingActor):
         precios_y_enlaces = list()
         productos: ResultSet[Tag] = soup.find_all('section', class_='row white-background')
         for producto in productos:
-            titulo = producto.find('h3',class_= "product-title line-clamp").text
-            if nombreProducto in titulo:
-                precio_tag: Tag= producto.find_all("h2",class_="product-price")[1]
-                precio_text = precio_tag.text
-                precio = precio_text
-                enlace = producto.find("div", class_='product-description padding-top-20').find("a")['href']
-                precios_y_enlaces.append({"price": precio, "link": enlace})
+            titulo_tag = producto.find('h3',class_= "product-title line-clamp")
+            if isinstance(titulo_tag, Tag):
+                titulo= titulo_tag.text
+                if nombreProducto in titulo:
+                    precio_tag: Tag= producto.find_all("h2",class_="product-price")[1]
+                    if precio_tag == None:
+                        precio= "0"
+                    else:
+                        precio = precio_tag.text
+                    enlace = producto.find("div", class_='product-description padding-top-20').find("a")['href']
+                    precios_y_enlaces.append({"price": precio, "link": enlace})
         return json.dumps(precios_y_enlaces)
