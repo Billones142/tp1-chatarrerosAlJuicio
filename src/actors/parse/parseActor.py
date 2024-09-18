@@ -77,29 +77,17 @@ class ParseActor(pykka.ThreadingActor):
     def parse_Hardgamers(self, nombreProducto: str, htmlString: str) -> list[str]: #TODO: corregir funcionamiento
         soup= BeautifulSoup(htmlString,"html.parser")
         precios_y_enlaces = list()
-        data_json = soup.find("script", type="application/ld+json")
-        if data_json:
-            productos_json = json.loads(data_json.string)
-            for producto in productos_json["@graph"]:
-                if "Product" in producto["@type"]:
-                    if nombreProducto.lower() in producto["name"].lower():
-                        precio = producto["offers"]["price"]
-                        enlace = producto["offers"]["url"]
-                        precios_y_enlaces.append({"price": precio, "link": enlace})
-        
-        # Si no se encuentran productos en JSON, intentar buscarlos en el HTML
-        if not precios_y_enlaces:
-            productos: ResultSet[Tag] = soup.find_all('section', class_='row white-background')
-            for producto in productos:
-                titulo_tag = producto.find('h3',class_= "product-title line-clamp")
-                if isinstance(titulo_tag, Tag):
-                    titulo= titulo_tag.text
-                    if nombreProducto in titulo:
-                        precio_tag: Tag= producto.find_all("h2",class_="product-price")[1]
-                        if precio_tag == None:
-                            precio= "0"
-                        else:
-                            precio = precio_tag.text
-                        enlace = producto.find("div", class_='product-description padding-top-20').find("a")['href']
-                        precios_y_enlaces.append({"price": precio, "link": enlace})
+        productos: ResultSet[Tag] = soup.find_all('section', class_='row white-background')
+        for producto in productos:
+            titulo_tag = producto.find('h3',class_= "product-title line-clamp")
+            if isinstance(titulo_tag, Tag):
+                titulo= titulo_tag.text
+                if nombreProducto in titulo:
+                    precio_tag: Tag= producto.find_all("h2",class_="product-price")[1]
+                    if precio_tag == None:
+                        precio= "0"
+                    else:
+                        precio = precio_tag.text
+                    enlace = producto.find("div", class_='product-description padding-top-20').find("a")['href']
+                    precios_y_enlaces.append({"price": precio, "link": enlace})
         return json.dumps(precios_y_enlaces)
