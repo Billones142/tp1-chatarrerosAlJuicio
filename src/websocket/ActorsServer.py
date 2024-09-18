@@ -35,16 +35,12 @@ class WebSocket_ActorServer(): #perdon gaby, es mas facil cuando es una clase
         self.stop_flag= stop_flag
 
     async def startServer(self):
-        logger.info("Starting actors websocket server")
-        self.scrapperActor= ScraperActor.start()
-        self.parseActor= ParseActor.start()
-        logger.info("Actores iniciados")
         try:
             self.websocketServer= await serve(handler= self.handle_client, host= self.host, port= self.port, max_size=10 * 1024 * 1024)
         except Exception as e:
             self.scrapperActor.stop(block= True)
             self.parseActor.stop(block= True)
-            logging.debug("Error al iniciar websocket" + e)
+            logging.error("Error al iniciar websocket" + e)
             raise Exception("Error al iniciar websocket:\n" + e)
     
     async def stopServerServices(self):
@@ -75,7 +71,7 @@ class WebSocket_ActorServer(): #perdon gaby, es mas facil cuando es una clase
                 response= json.dumps(self.ask_HtmlParser(messages["command"], messages["htmlString"], messages["productName"]))
 
         except Exception as e:
-            logger.debug("Error while responding message")
+            logger.error("Error while responding message")
             response= ""
             # Get the last frame from the stack trace
             stack = traceback.extract_tb(e.__traceback__)
@@ -85,14 +81,21 @@ class WebSocket_ActorServer(): #perdon gaby, es mas facil cuando es una clase
             line_number = last_frame.lineno
             error= f"\nInicio error del servidor ({function_name} en {filename} linea {line_number}):\n" + str(e) + "\n Fin de error del servidor"
 
+        logger.debug("Sending to client: %s",response)
         logger.info("Ended Hanlding message")
         return json.dumps({"error": error,"result":response})
 
     def ask_scrapper(self,url: str) -> str:
-        return self.scrapperActor.ask(block= True, message={'command': 'scrapeHtml', 'url': url})
+        scrapperActor= ScraperActor.start()
+        result= scrapperActor.ask(block= True, message={'command': 'scrapeHtml', 'url': url})
+        scrapperActor.stop()
+        return result
 
     def ask_HtmlParser(self, comand: str, htmlString: str, productName: str) -> list:
-        return self.parseActor.ask(block= True, message={'command': comand, 'htmlString': htmlString, "productName": productName})
+        parseActor= ParseActor.start()
+        result= parseActor.ask(block= True, message={'command': comand, 'htmlString': htmlString, "productName": productName})
+        parseActor.stop()
+        return result
 
     async def serverLoop(self):
         await self.startServer()
