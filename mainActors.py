@@ -27,8 +27,8 @@ def main():
         asyncio.run(run_server(event))
     except KeyboardInterrupt:
         print("Ctrl+c recibido, detendiendo servidor...")
-        event.set()
     finally:
+        event.set()
         print("Servidor detenido.")
 
 if __name__ == "__main__":
