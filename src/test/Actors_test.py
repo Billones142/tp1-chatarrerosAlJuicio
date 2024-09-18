@@ -6,9 +6,7 @@ from pykka import ActorRef
 
 
 # importaciones propias del proyecto
-#from ..actors.parse.parseActor import ParseActor
 from src.actors import ScraperActor, ParseActor
-from src.utils import parsePaginasJson
 
 jsonPath= '../paginasAScrapear.json'
 
