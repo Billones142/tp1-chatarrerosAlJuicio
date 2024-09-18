@@ -1,4 +1,5 @@
 import asyncio
+import threading
 
 # importaciones del proyecto
 from src.websocket import API_ActorsServer
@@ -6,11 +7,11 @@ from src.utils import encontrar_producto_mas_barato
 
 
 jsonPath= './src/paginasAScrapear.json'
-
+eventoServer= threading.Event() # flag para detener el servidor de actores al final de la ejecucion
 
 async def main(): # TODO: interfaz
+    actorsServer= API_ActorsServer("127.0.0.1",8765, localServer= True, serverFlag= eventoServer)
     nombreProducto= input("que producto deseas buscar?: ")
-    actorsServer= API_ActorsServer(f"ws://127.0.0.1:{8765}")
     async with actorsServer:
         htmlString= await actorsServer.ask_scrapper(f"https://listado.mercadolibre.com.ar/nuevo/{nombreProducto}")
         htmlParseado= await actorsServer.ask_parser(command= "parseMercadoLibre", htmlString=htmlString, productName=nombreProducto)
@@ -24,4 +25,8 @@ async def main(): # TODO: interfaz
     print(encontrar_producto_mas_barato(htmlParseado3))
 
 if __name__ == '__main__':
-    asyncio.run(main= main())
+    try:
+        asyncio.run(main= main())
+    finally:
+        eventoServer.set() # detiene el servidor de actores local
+        # sino no se apaga la terminal sigue funcionando hasta que se fuerza el cierre
