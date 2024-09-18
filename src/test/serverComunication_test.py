@@ -9,8 +9,6 @@ import websockets
 from src.websocket import API_ActorsServer, WebSocket_ActorServer, ErrorActoresAPI 
 
 
-
-
 class TestCommunication(unittest.IsolatedAsyncioTestCase):
     def setUp(self):
         print(threading.enumerate())
