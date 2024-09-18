@@ -1,7 +1,5 @@
-import threading
 import unittest
 from typing import Tuple
-import Pyro5.api
 from pykka import ActorRef
 
 
