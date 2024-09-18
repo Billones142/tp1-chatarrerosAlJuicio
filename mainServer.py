@@ -9,7 +9,7 @@ jsonPath= './src/paginasAScrapear.json'
 
 
 async def main(): # TODO: interfaz
-    nombreProducto= "4060"
+    nombreProducto= input("que producto deseas buscar?: ")
     actorsServer= API_ActorsServer(f"ws://127.0.0.1:{8765}")
     async with actorsServer:
         htmlString= await actorsServer.ask_scrapper(f"https://listado.mercadolibre.com.ar/nuevo/{nombreProducto}")
