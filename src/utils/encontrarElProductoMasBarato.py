@@ -32,7 +32,7 @@ def encontrar_producto_mas_barato(productos):
     productos_filtrados = limpiar_diccionario_productos(productos)
     
     if not productos_filtrados:
-        return "No se encuentra disponible el producto en esta pagina"
+        return (None, None)
     
     # Suponemos que el primer producto es el más barato al principio
     producto_mas_barato = productos_filtrados[0]
@@ -61,7 +61,6 @@ def comparar_precios_enlaces(lista_productos_por_enlace):
         precio, link = encontrar_producto_mas_barato(productos)
         if precio is not None:
             productos_mas_baratos.append({'precio': precio, 'link': link})
-
     if not productos_mas_baratos:
         return "No se encontraron productos disponibles en los enlaces proporcionados."
     
