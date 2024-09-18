@@ -11,7 +11,7 @@ eventoServer= threading.Event() # flag para detener el servidor de actores al fi
 
 async def main(): # TODO: interfaz
     actorsServer= API_ActorsServer("127.0.0.1",8765, localServer= True, serverFlag= eventoServer)
-    nombreProducto= input("que producto deseas buscar?: ")
+    nombreProducto= input("que producto deseas buscar?(Se necesita que sea especifico): ")
     async with actorsServer:
         htmlString= await actorsServer.ask_scrapper(f"https://listado.mercadolibre.com.ar/nuevo/{nombreProducto}")
         htmlParseado= await actorsServer.ask_parser(command= "parseMercadoLibre", htmlString=htmlString, productName=nombreProducto)
