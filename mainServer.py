@@ -20,9 +20,13 @@ async def main(): # TODO: interfaz
         htmlString3= await actorsServer.ask_scrapper(f"https://www.hardgamers.com.ar/search?text={nombreProducto}")
         htmlParseado3= await actorsServer.ask_parser(command= "parseHardgamers", htmlString=htmlString3, productName=nombreProducto)
     
+    print(f"el producto con el nombre {nombreProducto} mas barato de mercado libre es:")
     print(encontrar_producto_mas_barato(htmlParseado))
+    print(f"el producto con el nombre {nombreProducto} mas barato de urano stream es:")
     print(encontrar_producto_mas_barato(htmlParseado2))
+    print(f"el producto con el nombre {nombreProducto} mas barato de hardgaming es:")
     print(encontrar_producto_mas_barato(htmlParseado3))
+    
 
 if __name__ == '__main__':
     try:

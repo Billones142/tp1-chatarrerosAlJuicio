@@ -1,40 +1,49 @@
-def limpiar_precio(precio_str):
-    """
-    Limpia el precio en formato de cadena eliminando los separadores de miles y convirtiendo
-    a un número flotante.
+def limpiar_precio(string):
+    # Convertimos a string en caso de que sea un número
+    string = str(string)
+    
+    # Eliminamos símbolos de moneda y espacios en blanco
+    string = string.replace('$', '').strip()
+    
+    # Mantenemos solo los caracteres numéricos, puntos y comas
+    numero = ''.join([char for char in string if char.isdigit() or char in ['.', ',']])
+    
+    return numero
 
-    :param precio_str: Precio en formato de cadena con posibles separadores de miles
-    :return: Precio como un número flotante
-    """
-    # Eliminar comas que actúan como separadores de miles
-    # precio_str = precio_str.replace('[.\n$]', '')
-    # Convertir la cadena a float
-    try:
-        return precio_str
-    except ValueError:
-        print(f"Error al convertir el precio: {precio_str}")
-        return float('inf')  # Devolver un valor alto si hay un error en la conversión
 
-def encontrar_producto_mas_barato(html_parseado):
+def limpiar_diccionario_productos(productos):
     """
-    Encuentra el producto más barato en una lista de productos, considerando precios en formato de cadena.
+    Elimina productos que contengan 'caja-vacia' en el link.
+    
+    :param productos: Lista de diccionarios con información de productos.
+    :return: Lista filtrada sin productos de cajas vacías.
+    """
+    return [producto for producto in productos if 'caja-vacia' not in producto['link'].lower()]
 
-    :param html_parseado: Lista de diccionarios, donde cada diccionario tiene la forma
-    {'price': precio del producto en formato de cadena}
-    :return: Diccionario del producto más barato
+def encontrar_producto_mas_barato(productos):
     """
-    if not html_parseado:
+    Encuentra el producto más barato en una lista de productos, después de eliminar los que contienen 'caja vacía'.
+
+    :param productos: Lista de diccionarios, donde cada diccionario tiene la forma
+    {'price': precio del producto, 'link': enlace del producto}.
+    :return: Diccionario del producto más barato.
+    """
+    # Limpiar productos que son cajas vacías
+    productos_filtrados = limpiar_diccionario_productos(productos)
+    
+    if not productos_filtrados:
         return None
     
     # Suponemos que el primer producto es el más barato al principio
-    producto_mas_barato = html_parseado[0]
-    # precio_mas_barato = limpiar_precio(producto_mas_barato['price'])
+    producto_mas_barato = productos_filtrados[0]
     precio_mas_barato = producto_mas_barato['price']
     
-    for producto in html_parseado[1:]:
+    # Iteramos sobre los productos restantes para encontrar el más barato
+    for producto in productos_filtrados[1:]:
         precio_actual = producto['price']
         if precio_actual < precio_mas_barato:
             producto_mas_barato = producto
             precio_mas_barato = precio_actual
     
-    return producto_mas_barato
+    return limpiar_precio(producto_mas_barato['price']), producto_mas_barato['link']
+
