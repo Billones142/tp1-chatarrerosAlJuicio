@@ -5,10 +5,20 @@ def limpiar_precio(string):
     # Eliminamos símbolos de moneda y espacios en blanco
     string = string.replace('$', '').strip()
     
-    # Mantenemos solo los caracteres numéricos, puntos y comas
-    numero = ''.join([char for char in string if char.isdigit() or char in ['.', ',']])
+    # Eliminamos el punto que representa miles
+    string = string.replace('.', '')
+    
+    # Reemplazamos la coma por un punto para manejar la parte decimal correctamente
+    string = string.replace(',', '.')
+    
+    # Convertimos el string a float para poder redondearlo
+    try:
+        numero = round(float(string))
+    except ValueError:
+        return None  # Si el valor no es convertible a número, devuelve None o un valor adecuado
     
     return numero
+
 
 
 def limpiar_diccionario_productos(productos):
@@ -18,7 +28,7 @@ def limpiar_diccionario_productos(productos):
     :param productos: Lista de diccionarios con información de productos.
     :return: Lista filtrada sin productos de cajas vacías.
     """
-    return [producto for producto in productos if 'caja-vacia' not in producto['link'].lower()]
+    return [producto for producto in productos if 'para' not in producto['link'].lower()]
 
 def encontrar_producto_mas_barato(productos):
     """
