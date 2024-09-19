@@ -88,7 +88,7 @@ class API_ActorsServer:
     
     async def connect(self):
         try:
-            self.serverWebsocketConnection = await websockets.connect(self.uri)
+            self.serverWebsocketConnection = await websockets.connect(self.uri ,max_size= 10 * 1024 * 1024)
         except:
             raise ErrorActoresAPI("Error al conectarse al servidor")
     
