@@ -47,8 +47,6 @@ class WebSocket_ActorServer(): #perdon gaby, es mas facil cuando es una clase
         logger.info("Stopping server services")
         self.websocketServer.close()
         await self.websocketServer.wait_closed()
-        self.scrapperActor.stop(block= True)
-        self.parseActor.stop(block= True)
         logger.info("Server services stop successfull")
 
     async def handle_client(self,websocket: ServerConnection):

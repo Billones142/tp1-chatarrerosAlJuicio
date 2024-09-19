@@ -42,7 +42,8 @@ class ParseActor(pykka.ThreadingActor):
             
             for producto in productos:
                 try:
-                    if nombreProducto.lower() in producto.text.lower():
+                    titulo= producto.text.casefold()
+                    if (nombreProducto.casefold() in titulo) and (" para " not in titulo):
                         precio_tag = producto.find_next('span', class_='andes-money-amount__fraction')
                         try:
                             precio = precio_tag.text
@@ -62,8 +63,8 @@ class ParseActor(pykka.ThreadingActor):
         productos: ResultSet[Tag] = soup.find_all('div', class_='products row row-small large-columns-6 medium-columns-3 small-columns-2 has-equal-box-heights equalize-box')
         for producto in productos:
                 titulo_tag: Tag= producto.find(name='p', class_="name product-title woocommerce-loop-product__title").find(name='a', class_="woocommerce-LoopProduct-link woocommerce-loop-product__link")
-                titulo: str = titulo_tag.text
-                if nombreProducto in titulo:
+                titulo: str = titulo_tag.text.casefold()
+                if (nombreProducto.casefold() in titulo) and (" para " not in titulo):
                     precio_tag = producto.find('span', class_='woocommerce-Price-amount amount').find("bdi")
                     if precio_tag:
                         try:
@@ -77,17 +78,17 @@ class ParseActor(pykka.ThreadingActor):
     def parse_Hardgamers(self, nombreProducto: str, htmlString: str) -> list[str]: #TODO: corregir funcionamiento
         soup= BeautifulSoup(htmlString,"html.parser")
         precios_y_enlaces = list()
-        productos: ResultSet[Tag] = soup.find_all('section', class_='row white-background')
+        productos: ResultSet[Tag] = soup.find_all('div', class_='product-description padding-top-20')
         for producto in productos:
             titulo_tag = producto.find('h3',class_= "product-title line-clamp")
             if isinstance(titulo_tag, Tag):
-                titulo= titulo_tag.text
-                if nombreProducto in titulo:
+                titulo= titulo_tag.text.casefold()
+                if (nombreProducto.casefold() in titulo) and (" para " not in titulo):
                     precio_tag: Tag= producto.find_all("h2",class_="product-price")[1]
                     if precio_tag == None:
                         precio= "0"
                     else:
                         precio = precio_tag.text
-                    enlace = producto.find("div", class_='product-description padding-top-20').find("a")['href']
+                    enlace = producto.find("a", class_="")['href']
                     precios_y_enlaces.append({"price": precio, "link": enlace})
         return json.dumps(precios_y_enlaces)
